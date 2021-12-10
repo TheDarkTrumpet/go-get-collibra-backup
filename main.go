@@ -11,7 +11,6 @@ import (
 	"os"
 	"strings"
 	"time"
-	"util"
 )
 
 const userCredsFile = "dhc_collibra.json"
@@ -72,7 +71,7 @@ func loadUserCreds() (collibraVars, error) {
 		log.Fatal(err)
 	}
 	varsFile := fmt.Sprintf("%s/.creds/%s", user, userCredsFile)
-	util.PrintHeader(fmt.Sprintf("Loading Creds from %v", varsFile))
+	PrintHeader(fmt.Sprintf("Loading Creds from %v", varsFile))
 
 	vars, err := ioutil.ReadFile(varsFile)
 	var collibra collibraVars
@@ -94,7 +93,7 @@ func basicAuth(vars collibraVars) string {
 }
 
 func loadAvailableBackups(vars collibraVars) ([]backup, error) {
-	util.PrintHeader("Loading available backups")
+	PrintHeader("Loading available backups")
 	var availableBackups []backup
 
 	// Calling /rest/backup
@@ -112,7 +111,7 @@ func loadAvailableBackups(vars collibraVars) ([]backup, error) {
 	body, _ := ioutil.ReadAll(resp.Body)
 
 	err = json.Unmarshal(body, &availableBackups)
-	fmt.Printf("==> Number of backups available: %d", len(body))
+	fmt.Printf("==> Number of backups available: %d\n", len(body))
 	return availableBackups, err
 }
 
@@ -121,7 +120,7 @@ func getYeserdayBackup(backups []backup, vars collibraVars) backup {
 	yString := fmt.Sprintf("%d-%02d-%02d", yDate.Year(), yDate.Month(), yDate.Day())
 	dateToSearch := strings.Replace(vars.BackupFormat, "<DATE>", yString, 1)
 
-	util.PrintHeader(fmt.Sprintf("Finding yeserday's backup, based off format: %s", dateToSearch))
+	PrintHeader(fmt.Sprintf("Finding yeserday's backup, based off format: %s", dateToSearch))
 
 	for _, backup := range backups {
 		if backup.BackupInformation.Name == dateToSearch {
@@ -132,7 +131,7 @@ func getYeserdayBackup(backups []backup, vars collibraVars) backup {
 }
 
 func downloadBackup(backup backup, vars collibraVars) error {
-	util.PrintHeader(fmt.Sprintf("Downloading Backup: %v", backup.BackupInformation.Name))
+	PrintHeader(fmt.Sprintf("Downloading Backup: %v", backup.BackupInformation.Name))
 	dgcBackupURI := fmt.Sprintf("%s/rest/backup/file/%s", vars.DGC, backup.Id)
 	client := &http.Client{}
 	req, _ := http.NewRequest("POST", dgcBackupURI, strings.NewReader(fmt.Sprintf("key=%v", vars.EncryptionKey)))
