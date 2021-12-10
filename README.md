@@ -32,7 +32,7 @@ To figure this out, go into your console (dgc link in the JSON), and:
 2. Click on "Backups" - Left Bar
 3. Look at the pattern, like in the screenshot.
 
-IMG
+![Collibra Console](/docs/CollibraBU.png)
 
 The important part is that for the portion that indicates a date, that you use the placeholder of `<DATE>`.  For example,
 lets say you have the following backup item listed:
